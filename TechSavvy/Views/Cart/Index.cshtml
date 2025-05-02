@@ -1,0 +1,79 @@
+﻿@using TechSavvy.Models.ViewModels
+@model CartItemViewModel
+
+<section id="cart_items">
+	<div class="container">
+		<div class="breadcrumbs">
+			<ol class="breadcrumb">
+				<li><a href="#">Home</a></li>
+				<li class="active">Shopping Cart</li>
+			</ol>
+		</div>
+		<div class="table-responsive cart_info">
+			<table class="table table-bordered text-center">
+				<thead class="thead-light">
+					<tr class="cart_menu">
+						<th class="text-center">Sản phẩm</th>
+						<th class="text-center">Tên sản phẩm</th>
+						<th class="text-center">Giá</th>
+						<th class="text-center">Số lượng</th>
+						<th class="text-center">Tổng</th>
+						<th class="text-center">Thao tác</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (Model.CartItems.Count > 0)
+					{
+						foreach (var item in Model.CartItems)
+						{
+							<tr>
+								<td class="align-middle">
+									<img src="~/media/products/@item.Image" alt="" width="100" height="100" />
+								</td>
+								<td class="align-middle">
+									<strong>@item.ProductName</strong>
+								</td>
+								<td class="align-middle">
+									@item.Price.ToString("#,##0 VNĐ")
+								</td>
+								<td class="align-middle">
+									<div class="d-flex justify-content-center align-items-center">
+										<a class="btn btn-sm btn-outline-primary mr-1" asp-action="Increase" asp-controller="Cart" asp-route-id="@item.ProductId">+</a>
+										<input class="form-control form-control-sm text-center" type="text" name="quantity" value="@item.Quantity" style="width: 50px;" readonly>
+										<a class="btn btn-sm btn-outline-primary ml-1" asp-action="Decrease" asp-controller="Cart" asp-route-id="@item.ProductId" >-</a>
+									</div>
+								</td>
+								<td class="align-middle">
+									@Model.CartItems.Where(x => x.ProductId == item.ProductId).Sum(x => x.Quantity * x.Price).ToString("#,#0 đ")
+								</td>
+								<td class="align-middle">
+									<a class="btn btn-sm btn-danger" asp-action="Remove" asp-controller="Cart" asp-route-id="@item.ProductId">
+										<i class="fa fa-times"></i> Xóa
+									</a>
+								</td>
+							</tr>
+						}
+						<tr>
+							<td colspan="4" class="text-right"><strong>Tổng cộng:</strong></td>
+							<td colspan="2" class="text-left"><strong>@Model.GrandTotal.ToString("#,##0 đ")</strong></td>
+						</tr>
+						<tr>
+							<td colspan="6" class="text-right">
+								<a class="btn btn-danger btn-sm" asp-controller="Cart" asp-action="Clear">Xóa tất cả</a>
+								<a class="btn btn-success btn-sm" asp-controller="Checkout" asp-action="Checkout">Thanh toán</a>
+							</td>
+						</tr>
+					}
+					else
+					{
+						<tr>
+							<td colspan="6">
+								<h4>Không có sản phẩm nào trong giỏ hàng</h4>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>
